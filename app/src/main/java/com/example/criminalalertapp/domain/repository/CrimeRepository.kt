@@ -9,4 +9,7 @@ interface CrimeRepository {
         lat: Double,
         lng: Double
     ): Flow<Resource<List<CrimeItem>>>
+
+    suspend fun reportCrime(crime: CrimeItem): Resource<Unit>
+
 }

@@ -1,5 +1,6 @@
 package com.example.criminalalertapp.data.repository
 
+import android.util.Log.e
 import com.example.criminalalertapp.data.local.LocalDataSource
 import com.example.criminalalertapp.data.mapper.CrimeDtoMapper
 import com.example.criminalalertapp.data.mapper.CrimeEntityMapper
@@ -19,6 +20,7 @@ class CrimeRepositoryImpl @Inject constructor(
     private val dtoMapper: CrimeDtoMapper,
     private val entityMapper: CrimeEntityMapper
 ) : CrimeRepository {
+
     override fun getCrimes(
         date: String?,
         lat: Double,
@@ -44,6 +46,17 @@ class CrimeRepositoryImpl @Inject constructor(
                     Resource.Success(domainCrimeItems)
                 }
             )
+        }
+    }
+
+    override suspend fun reportCrime(crime: CrimeItem): Resource<Unit> {
+        return try {
+            val crimeEntity = entityMapper(crime)
+            localDataSource.saveUserCrime(crimeEntity)
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(message = "Could not save crime ${e.localizedMessage}")
         }
     }
 }

@@ -14,4 +14,8 @@ interface CrimeDao {
 
     @Query("SELECT * FROM crimes")
     fun getAllCrimes() : Flow<List<CrimeEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserCrime(crimeEntity: CrimeEntity)
+
 }

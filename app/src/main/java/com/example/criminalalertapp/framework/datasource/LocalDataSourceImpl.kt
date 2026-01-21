@@ -17,4 +17,9 @@ class LocalDataSourceImpl @Inject constructor(
     override suspend fun insertCrime(crimeEntities: List<CrimeEntity>) {
         dao.insertCrime(crimeEntities)
     }
+
+    override suspend fun saveUserCrime(crimeEntity: CrimeEntity) {
+        dao.insertUserCrime(crimeEntity)
+
+    }
 }
