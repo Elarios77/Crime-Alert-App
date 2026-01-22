@@ -4,7 +4,6 @@ import com.example.criminalalertapp.domain.model.CrimeItem
 import com.example.criminalalertapp.domain.repository.CrimeRepository
 import com.example.criminalalertapp.util.Resource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetCrimesUseCase @Inject constructor(
