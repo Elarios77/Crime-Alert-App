@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Criminal Alert App</string>
+    <string name="OsmMapViewText">Map Preview Placeholder</string>
 </resources>
