@@ -23,7 +23,9 @@ class ReportViewModel @Inject constructor(
     fun onStreetNameChange(newStreetName: String) {
         _uiState.update {
             it.copy(
-                streetName = newStreetName
+                isLoading = false,
+                streetName = newStreetName,
+                error = null
             )
         }
     }
@@ -31,7 +33,9 @@ class ReportViewModel @Inject constructor(
     fun onCategoryNameChange(newCategory: String) {
         _uiState.update {
             it.copy(
-                category = newCategory
+                isLoading = false,
+                category = newCategory,
+                error = null
             )
         }
     }
@@ -78,6 +82,17 @@ class ReportViewModel @Inject constructor(
                 else -> {}
             }
         }
+    }
+
+    fun onMonthChange(newMonth: String) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                month = newMonth,
+                error = null
+            )
+        }
+
     }
 
     fun resetState() {

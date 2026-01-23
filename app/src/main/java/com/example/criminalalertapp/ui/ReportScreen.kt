@@ -1,0 +1,302 @@
+package com.example.criminalalertapp.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.K
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.criminalalertapp.R
+import com.example.criminalalertapp.ui.components.SpinningIcon
+import com.example.criminalalertapp.ui.theme.CriminalAlertAppTheme
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+@Composable
+fun ReportScreen(
+    viewModel: ReportViewModel = hiltViewModel()
+) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val currentMonth = remember {
+        SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
+    }
+
+    val isFormValid = uiState.streetName.isNotBlank() &&
+            uiState.category.isNotBlank() &&
+            uiState.month.isNotBlank()
+
+
+    ReportContent(
+        streetName = uiState.streetName,
+        category = uiState.category,
+        month = uiState.month,
+        isLoading = uiState.isLoading,
+        isFormValid = isFormValid,
+        onStreetNameChange = viewModel::onStreetNameChange,
+        onCategoryNameChange = viewModel::onCategoryNameChange,
+        onMonthChange = viewModel::onMonthChange,
+        submitCrime = { viewModel.submitCrime(51.5074, -0.1278) }
+    )
+}
+
+@Composable
+fun ReportContent(
+    streetName: String,
+    category: String,
+    month: String,
+    isFormValid: Boolean,
+    isLoading: Boolean,
+    onMonthChange: (String) -> Unit,
+    onCategoryNameChange: (String) -> Unit,
+    onStreetNameChange: (String) -> Unit,
+    submitCrime: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        colorResource(R.color.PoliceDarkBlue),
+                        colorResource(R.color.PoliceGray)
+                    )
+                )
+            )
+    ) {
+        TopBar()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top
+        )
+        {
+            Spacer(modifier = Modifier.height(20.dp))
+            OutlinedTextField(
+                value = streetName,
+                onValueChange = onStreetNameChange,
+                label = {
+                    Text(
+                        stringResource(R.string.location_street),
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
+                placeholder = { Text("e.g. Baker Street", color = Color.White) },
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = { Icon(Icons.Default.LocationOn, null, tint = colorResource(R.color.PoliceDarkBlue)) },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = colorResource(R.color.PoliceDarkBlue),
+                    unfocusedBorderColor = colorResource(R.color.PoliceDarkBlue)
+                ),
+                singleLine = true,
+                maxLines = 1,
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp
+                )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            CrimeCategoryDropDownMenu(
+                selectedCategory = category,
+                onCategorySelected = onCategoryNameChange
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = month,
+                onValueChange = onMonthChange,
+                label = {
+                    Text(
+                        stringResource(R.string.date),
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
+                placeholder = { Text("e.g. 05/2025", color = Color.White) },
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = { Icon(Icons.Default.DateRange, null, tint = colorResource(R.color.PoliceDarkBlue)) },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = colorResource(R.color.PoliceDarkBlue),
+                    unfocusedBorderColor = colorResource(R.color.PoliceDarkBlue)
+                ),
+                singleLine = true,
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun TopBar() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .background(
+                color = colorResource(R.color.PoliceDarkBlue),
+                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
+            ),
+        contentAlignment = Alignment.Center
+    )
+    {
+        Column(modifier = Modifier.padding(top = 12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            SpinningIcon(
+                painter = painterResource(R.drawable.police_badge),
+                contentDescription = null,
+                modifier = Modifier.size(70.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.reportScreen_TitleLarge),
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.White
+            )
+            Text(
+                text = stringResource(R.string.reportScreen_subtitle),
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.White.copy(alpha = 0.9f)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CrimeCategoryDropDownMenu(
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit
+) {
+    val categories = listOf(
+        "Anti-social behavior",
+        "Burglary",
+        "Violent crime",
+        "Robbery",
+        "Vehicle crime",
+        "Other theft"
+    )
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        OutlinedTextField(
+            value = selectedCategory,
+            onValueChange = { },
+            label = {
+                Text(
+                    stringResource(R.string.category),
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(type = MenuAnchorType.PrimaryNotEditable, enabled = true),
+            readOnly = true,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(R.drawable.siren),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = colorResource(R.color.PoliceDarkBlue),
+                unfocusedBorderColor = colorResource(R.color.PoliceDarkBlue),
+
+                ),
+            textStyle = TextStyle(
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp
+            )
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(color = colorResource(R.color.PoliceDarkBlue))
+        ) {
+            categories.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(text = category, color = Color.White) },
+                    onClick = {
+                        onCategorySelected(category)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ReportScreenPreview() {
+    CriminalAlertAppTheme {
+        ReportContent(
+            streetName = "10,Str.",
+            category = "Robbery",
+            month = "2026",
+            isFormValid = true,
+            isLoading = true,
+            onMonthChange = {},
+            onCategoryNameChange = {},
+            onStreetNameChange = { },
+            submitCrime = { },
+        )
+    }
+}
+

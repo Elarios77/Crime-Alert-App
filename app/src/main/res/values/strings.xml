@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Criminal Alert App</string>
     <string name="OsmMapViewText">Map Preview Placeholder</string>
+    <string name="reportScreen_TitleLarge">REPORT INCIDENT</string>
+    <string name="reportScreen_subtitle">Official Police Database</string>
+    <string name="location_street">Location / Street</string>
+    <string name="category">Category</string>
+    <string name="date">Date-MM/YYYY</string>
 </resources>
