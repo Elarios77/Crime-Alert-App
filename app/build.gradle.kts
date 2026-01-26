@@ -82,4 +82,6 @@ dependencies {
     implementation(libs.osmbonuspack)
 
     implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation("com.github.MKergall:osmbonuspack:6.9.0")
 }

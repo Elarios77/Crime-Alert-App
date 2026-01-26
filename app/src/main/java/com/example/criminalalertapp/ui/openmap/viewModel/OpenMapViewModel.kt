@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.criminalalertapp.usecase.GetCrimesUseCase
 import com.example.criminalalertapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,19 +18,19 @@ import javax.inject.Inject
 class OpenMapViewModel @Inject constructor(
     private val getCrimesUseCase: GetCrimesUseCase,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(OpenMapUiState())
     val uiState: StateFlow<OpenMapUiState> = _uiState.asStateFlow()
 
+    private var searchJob: Job?=null
+
     init {
-        loadCrimes()
+        loadCrimes(51.5074,-0.1278)
     }
-
-    private fun loadCrimes() {
-        viewModelScope.launch {
-            val lat = 51.5074
-            val lng = -0.1278
-
+     fun loadCrimes(lat: Double,lng: Double) {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(800)
+            _uiState.update { it.copy(isLoading = true) }
             getCrimesUseCase(null, lat, lng).collect{ result ->
                 when (result) {
                     is Resource.Loading -> {

@@ -74,7 +74,7 @@ fun SplashScreen(
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            Color(0xFF3C7BFF),
+                            Color(0xFFFF2618),
                             Color.Transparent
                         )
                     ),

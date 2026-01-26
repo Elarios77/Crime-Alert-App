@@ -1,5 +1,7 @@
 package com.example.criminalalertapp.ui.openmap.screen
 
+import android.graphics.drawable.BitmapDrawable
+import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,12 +26,16 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.criminalalertapp.R
 import com.example.criminalalertapp.domain.model.CrimeItem
 import com.example.criminalalertapp.ui.openmap.viewModel.OpenMapUiState
 import com.example.criminalalertapp.ui.openmap.viewModel.OpenMapViewModel
 import com.example.criminalalertapp.ui.theme.CriminalAlertAppTheme
-import org.osmdroid.util.BoundingBox
+import org.osmdroid.bonuspack.clustering.RadiusMarkerClusterer
+import org.osmdroid.events.MapListener
+import org.osmdroid.events.ScrollEvent
+import org.osmdroid.events.ZoomEvent
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -49,14 +56,18 @@ fun OpenMapScreen(
 
     MapContent(
         state = uiState,
-        snackBarHostState = snackBarHostState
+        snackBarHostState = snackBarHostState,
+        onCameraMove = { lat, lng ->
+            viewModel.loadCrimes(lat, lng)
+        }
     )
 }
 
 @Composable
 fun MapContent(
     state: OpenMapUiState,
-    snackBarHostState: SnackbarHostState
+    snackBarHostState: SnackbarHostState,
+    onCameraMove: (Double, Double) -> Unit
 ) {
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) }
@@ -68,7 +79,8 @@ fun MapContent(
         ) {
             OsmMapView(
                 crimes = state.crimes,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                onCameraMove = onCameraMove
             )
 
             if (state.isLoading) {
@@ -80,8 +92,15 @@ fun MapContent(
 
 @Composable
 fun OsmMapView(
-    crimes: List<CrimeItem>, modifier: Modifier
+    crimes: List<CrimeItem>,
+    onCameraMove:(Double,Double)->Unit,
+    modifier: Modifier
 ) {
+    val context = LocalContext.current
+
+    val clusterIcon = ContextCompat.getDrawable(context, R.drawable.police_cap) as? BitmapDrawable
+    val pinIcon = ContextCompat.getDrawable(context, R.drawable.ic_pin_red)
+
     val isPreview = LocalInspectionMode.current
     if (isPreview) {
         Box(
@@ -99,30 +118,49 @@ fun OsmMapView(
             factory = { context ->
                 MapView(context).apply {
                     setMultiTouchControls(true)
-                    val london = GeoPoint(51.5074, -0.1278)
-                    controller.setZoom(13.0)
-                    controller.setCenter(london)
-                    val londonBounds = BoundingBox(51.70, 0.30, 51.30, -0.50)
-                    setScrollableAreaLimitDouble(londonBounds)
-                    setMinZoomLevel(10.0)
-                    setMaxZoomLevel(18.0)
+                    setLayerType(View.LAYER_TYPE_HARDWARE, null)
+                    controller.setZoom(14.0)
+                    controller.setCenter(GeoPoint(51.5074, -0.1278))
+                    addMapListener(object : MapListener {
+                        override fun onScroll(event: ScrollEvent?): Boolean{
+                            event?.source?.let{map->
+                                val center = map.mapCenter
+                                onCameraMove(center.latitude,center.longitude)
+                            }
+                            return true
+                        }
+
+                        override fun onZoom(event: ZoomEvent?): Boolean {
+                            event?.source?.let { map->
+                                val center = map.mapCenter
+                                onCameraMove(center.latitude,center.longitude)
+                            }
+                            return true
+                        }
+                    })
                 }
             },
             update = { mapView ->
                 mapView.overlays.clear()
-                crimes.forEach { crime ->
-                    val marker = Marker(mapView)
-                    marker.position = GeoPoint(crime.latitude, crime.longitude)
-                    marker.title = "${crime.category} (${crime.month})"
-                    marker.snippet = crime.streetName
-                    marker.icon = ContextCompat.getDrawable(mapView.context, R.drawable.ic_pin_red)
-                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                    marker.setOnMarkerClickListener { m, _ ->
-                        m.showInfoWindow()
-                        true
+
+                val clusterer = RadiusMarkerClusterer(context)
+                clusterer.setIcon(clusterIcon?.bitmap)
+                clusterer.textPaint.textSize = 60f
+
+                val markers = crimes.map { crime ->
+                    Marker(mapView).apply {
+                        position = GeoPoint(crime.latitude, crime.longitude)
+                        title = "${crime.category} (${crime.month})"
+                        snippet = crime.streetName
+                        icon = pinIcon
+                        setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                        closeInfoWindow()
                     }
-                    mapView.overlays.add(marker)
                 }
+
+                clusterer.items.addAll(markers)
+                mapView.overlays.add(clusterer)
+
                 mapView.invalidate()
             }
         )
@@ -151,7 +189,8 @@ fun MapScreenPreview() {
                 crimes = mockCrime,
                 error = null
             ),
-            snackBarHostState = remember { SnackbarHostState() }
+            snackBarHostState = remember { SnackbarHostState() },
+            onCameraMove = { _, _ -> }
         )
     }
 }

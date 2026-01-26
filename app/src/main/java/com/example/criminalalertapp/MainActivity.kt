@@ -21,29 +21,29 @@ class MainActivity : ComponentActivity() {
         setContent {
             CriminalAlertAppTheme(darkTheme = false) {
                 //TEMPORARY
-//                val navController = rememberNavController()
-//                NavHost(
-//                    navController = navController,
-//                    startDestination = "splash"
-//                ) {
-//
-//                    composable("splash") {
-//                        SplashScreen(
-//                            onTimeout = {
-//                                navController.navigate("map") {
-//                                    popUpTo("splash") { inclusive = true }
-//                                }
-//                            }
-//                        )
-//                    }
-//                    composable("map") {
-//                        OpenMapScreen()
-//                    }
-//                    composable("report") {
-//                        ReportScreen()
-//                    }
-//                }
-                ReportScreen()
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = "splash"
+                ) {
+
+                    composable("splash") {
+                        SplashScreen(
+                            onTimeout = {
+                                navController.navigate("map") {
+                                    popUpTo("splash") { inclusive = true }
+                                }
+                            }
+                        )
+                    }
+                    composable("map") {
+                        OpenMapScreen()
+                    }
+                    composable("report") {
+                        ReportScreen()
+                    }
+                }
+                //ReportScreen()
             }
         }
     }
