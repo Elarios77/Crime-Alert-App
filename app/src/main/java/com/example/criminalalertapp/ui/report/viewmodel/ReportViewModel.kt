@@ -1,4 +1,4 @@
-package com.example.criminalalertapp.ui
+package com.example.criminalalertapp.ui.report.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

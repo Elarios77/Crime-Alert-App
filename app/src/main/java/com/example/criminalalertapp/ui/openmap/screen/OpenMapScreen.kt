@@ -1,6 +1,5 @@
 package com.example.criminalalertapp.ui.openmap.screen
 
-import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,33 +17,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.criminalalertapp.R
 import com.example.criminalalertapp.domain.model.CrimeItem
 import com.example.criminalalertapp.ui.openmap.viewModel.OpenMapUiState
-import com.example.criminalalertapp.ui.openmap.viewModel.OpenMapViewModel
 import com.example.criminalalertapp.ui.theme.CriminalAlertAppTheme
+import com.example.criminalalertapp.util.toBitMap
 import org.osmdroid.bonuspack.clustering.RadiusMarkerClusterer
+import org.osmdroid.events.DelayedMapListener
 import org.osmdroid.events.MapListener
 import org.osmdroid.events.ScrollEvent
 import org.osmdroid.events.ZoomEvent
+import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 
 @Composable
 fun OpenMapScreen(
-    viewModel: OpenMapViewModel = hiltViewModel()
+    uiState:OpenMapUiState,
+    onCameraMove: (Double, Double) -> Unit,
+    onReportClicked: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.error)
@@ -57,9 +59,7 @@ fun OpenMapScreen(
     MapContent(
         state = uiState,
         snackBarHostState = snackBarHostState,
-        onCameraMove = { lat, lng ->
-            viewModel.loadCrimes(lat, lng)
-        }
+        onCameraMove = onCameraMove
     )
 }
 
@@ -93,12 +93,12 @@ fun MapContent(
 @Composable
 fun OsmMapView(
     crimes: List<CrimeItem>,
-    onCameraMove:(Double,Double)->Unit,
+    onCameraMove: (Double, Double) -> Unit,
     modifier: Modifier
 ) {
     val context = LocalContext.current
-
-    val clusterIcon = ContextCompat.getDrawable(context, R.drawable.police_cap) as? BitmapDrawable
+    val clusterIconDrawable = ContextCompat.getDrawable(context, R.drawable.cluser_icon)
+    val clusterBitMap = clusterIconDrawable?.toBitMap()
     val pinIcon = ContextCompat.getDrawable(context, R.drawable.ic_pin_red)
 
     val isPreview = LocalInspectionMode.current
@@ -121,46 +121,59 @@ fun OsmMapView(
                     setLayerType(View.LAYER_TYPE_HARDWARE, null)
                     controller.setZoom(14.0)
                     controller.setCenter(GeoPoint(51.5074, -0.1278))
-                    addMapListener(object : MapListener {
-                        override fun onScroll(event: ScrollEvent?): Boolean{
-                            event?.source?.let{map->
+
+                    val londonBounds = BoundingBox(51.7, 0.3, 51.3, -0.5)
+                    setScrollableAreaLimitDouble(londonBounds)
+                    minZoomLevel = 10.0
+                    maxZoomLevel = 20.0
+
+                    val mapListener = object : MapListener {
+                        override fun onScroll(event: ScrollEvent?): Boolean {
+                            event?.source?.let { map ->
                                 val center = map.mapCenter
-                                onCameraMove(center.latitude,center.longitude)
+                                onCameraMove(center.latitude, center.longitude)
                             }
                             return true
                         }
 
                         override fun onZoom(event: ZoomEvent?): Boolean {
-                            event?.source?.let { map->
+                            event?.source?.let { map ->
                                 val center = map.mapCenter
-                                onCameraMove(center.latitude,center.longitude)
+                                onCameraMove(center.latitude, center.longitude)
                             }
                             return true
                         }
-                    })
+                    }
+                    addMapListener(DelayedMapListener(mapListener, 500))
                 }
             },
             update = { mapView ->
-                mapView.overlays.clear()
+                val existingClusterer = mapView.overlays.firstOrNull { it is RadiusMarkerClusterer } as? RadiusMarkerClusterer
 
-                val clusterer = RadiusMarkerClusterer(context)
-                clusterer.setIcon(clusterIcon?.bitmap)
-                clusterer.textPaint.textSize = 60f
+                val clusterer = if(existingClusterer != null){
+                    existingClusterer
+                }else{
+                    RadiusMarkerClusterer(mapView.context).apply {
+                        setIcon(clusterBitMap)
+                        textPaint.color = Color.White.toArgb()
+                        textPaint.textSize = 40f
+                        mapView.overlays.add(0, this)
+                    }
+                }
 
-                val markers = crimes.map { crime ->
+                clusterer.items.clear()
+
+                val markers = crimes.map {crime ->
                     Marker(mapView).apply {
                         position = GeoPoint(crime.latitude, crime.longitude)
                         title = "${crime.category} (${crime.month})"
                         snippet = crime.streetName
                         icon = pinIcon
                         setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                        closeInfoWindow()
                     }
                 }
-
                 clusterer.items.addAll(markers)
-                mapView.overlays.add(clusterer)
-
+                clusterer.invalidate()
                 mapView.invalidate()
             }
         )

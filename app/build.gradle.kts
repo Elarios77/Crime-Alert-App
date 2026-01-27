@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -82,6 +83,9 @@ dependencies {
     implementation(libs.osmbonuspack)
 
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
 
-    implementation("com.github.MKergall:osmbonuspack:6.9.0")
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.androidx.preference.ktx)
 }

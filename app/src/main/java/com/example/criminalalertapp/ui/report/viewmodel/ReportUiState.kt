@@ -1,4 +1,4 @@
-package com.example.criminalalertapp.ui
+package com.example.criminalalertapp.ui.report.viewmodel
 
 data class ReportUiState(
     val isLoading: Boolean = false,

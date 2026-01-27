@@ -1,5 +1,7 @@
-package com.example.criminalalertapp.ui
+package com.example.criminalalertapp.ui.report.screen
 
+import android.R.attr.category
+import android.service.autofill.Validators.or
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.K
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,10 +44,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.criminalalertapp.R
 import com.example.criminalalertapp.ui.components.SpinningIcon
+import com.example.criminalalertapp.ui.report.viewmodel.ReportUiState
 import com.example.criminalalertapp.ui.theme.CriminalAlertAppTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -54,10 +54,12 @@ import java.util.Locale
 
 @Composable
 fun ReportScreen(
-    viewModel: ReportViewModel = hiltViewModel()
+    uiState: ReportUiState,
+    onStreetNameChange: (String) -> Unit,
+    onCategoryNameChange: (String) -> Unit,
+    onMonthChange: (String) -> Unit,
+    submitCrime: () -> Unit,
 ) {
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val currentMonth = remember {
         SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
@@ -67,17 +69,16 @@ fun ReportScreen(
             uiState.category.isNotBlank() &&
             uiState.month.isNotBlank()
 
-
     ReportContent(
         streetName = uiState.streetName,
         category = uiState.category,
         month = uiState.month,
         isLoading = uiState.isLoading,
         isFormValid = isFormValid,
-        onStreetNameChange = viewModel::onStreetNameChange,
-        onCategoryNameChange = viewModel::onCategoryNameChange,
-        onMonthChange = viewModel::onMonthChange,
-        submitCrime = { viewModel.submitCrime(51.5074, -0.1278) }
+        onStreetNameChange =onStreetNameChange,
+        onCategoryNameChange = onCategoryNameChange,
+        onMonthChange =onMonthChange,
+        submitCrime = submitCrime
     )
 }
 
