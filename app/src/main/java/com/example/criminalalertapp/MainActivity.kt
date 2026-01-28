@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.criminalalertapp.ui.report.screen.ReportScreen
 import com.example.criminalalertapp.ui.animatedsplashscreen.SplashScreen
+import com.example.criminalalertapp.ui.navigation.AppNavHost
 import com.example.criminalalertapp.ui.openmap.screen.OpenMapScreen
 import com.example.criminalalertapp.ui.theme.CriminalAlertAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,33 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CriminalAlertAppTheme(darkTheme = false) {
                 //TEMPORARY
-//                val navController = rememberNavController()
-//                NavHost(
-//                    navController = navController,
-//                    startDestination = "splash"
-//                ) {
-//
-//                    composable("splash") {
-//                        SplashScreen(
-//                            onTimeout = {
-//                                navController.navigate("map") {
-//                                    popUpTo("splash") { inclusive = true }
-//                                }
-//                            }
-//                        )
-//                    }
-//                    composable("map") {
-//                        OpenMapScreen(
-//                            uiState = TODO(),
-//                            onCameraMove = TODO(),
-//                            onReportClicked = TODO()
-//                        )
-//                    }
-//                    composable("report") {
-//                        ReportScreen()
-//                    }
-//                }
-//                ReportScreen()
+                AppNavHost()
             }
         }
     }

@@ -10,5 +10,8 @@
     <color name="PoliceDarkBlue">#FF00192F</color>
     <color name="PoliceRed">#FFD32F2F</color>
     <color name="PoliceGray">#FFB0BEC5</color>
+    <color name="GlassBlue">#3300192F</color>
+    <color name="GlassHighlight">#26FFFFFF</color>
+    <color name="UnselectedWhite">#80FFFFFF</color>
 
 </resources>

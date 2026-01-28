@@ -8,6 +8,7 @@ import com.example.criminalalertapp.ui.animatedsplashscreen.navigation.SplashRou
 import com.example.criminalalertapp.ui.animatedsplashscreen.navigation.splashScreen
 import com.example.criminalalertapp.ui.openmap.navigation.OpenMapRoute
 import com.example.criminalalertapp.ui.openmap.navigation.openMapScreen
+import com.example.criminalalertapp.ui.report.navigation.ReportRoute
 import com.example.criminalalertapp.ui.report.navigation.reportScreen
 
 @Composable
@@ -20,18 +21,19 @@ internal fun AppNavHost(
     NavHost(
         navController = navController,
         startDestination = SplashRoute
-    ){
+    ) {
         splashScreen(
             onTimeout = {
-                navController.navigate(OpenMapRoute){
-                    popUpTo(SplashRoute){inclusive = true}
+                navController.navigate(OpenMapRoute) {
+                    popUpTo(SplashRoute) { inclusive = true }
                 }
             }
         )
         openMapScreen(
-            onNavigateToReport = TODO()
+            onNavigateToReport = {
+                navController.navigate(ReportRoute)
+            }
         )
         reportScreen()
     }
-
 }

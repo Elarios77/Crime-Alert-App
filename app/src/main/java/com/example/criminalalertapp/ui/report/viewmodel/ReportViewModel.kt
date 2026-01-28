@@ -68,8 +68,7 @@ class ReportViewModel @Inject constructor(
                 streetName = _uiState.value.streetName
             )
 
-            val result = reportCrimeUseCase(newCrime)
-            when (result) {
+            when ( val result = reportCrimeUseCase(newCrime)) {
                 is Resource.Success -> {
                     _uiState.update { it.copy(isLoading = false, isSuccess = true) }
                 }
