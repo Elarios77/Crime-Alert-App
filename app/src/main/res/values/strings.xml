@@ -6,4 +6,7 @@
     <string name="location_street">Location / Street</string>
     <string name="category">Category</string>
     <string name="date">Date-MM/YYYY</string>
+    <string name="home">Home</string>
+    <string name="map">Map</string>
+    <string name="report">Report</string>
 </resources>
