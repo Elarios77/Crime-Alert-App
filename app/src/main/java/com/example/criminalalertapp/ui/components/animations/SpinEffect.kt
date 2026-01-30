@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.graphicsLayer
 
 @Composable
 fun SpinEffect(
@@ -15,10 +15,12 @@ fun SpinEffect(
     content: @Composable () -> Unit
 ) {
     val rotation by animateFloatAsState(
-        targetValue = if (isActive) 360f else 0f,
+        targetValue = if (isActive) 180f else 0f,
         animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
     )
-    Box(modifier = Modifier.rotate(rotation)) {
+    Box(modifier = Modifier.graphicsLayer {
+        rotationY = rotation
+    }) {
         content()
     }
 }

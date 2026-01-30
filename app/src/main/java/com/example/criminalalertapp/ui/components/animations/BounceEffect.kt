@@ -17,7 +17,7 @@ fun BounceEffect(
     val scale by animateFloatAsState(
         targetValue = if (isActive) 1.2f else 1.0f,
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
+            dampingRatio = Spring.DampingRatioHighBouncy,
             stiffness = Spring.StiffnessLow
         ),
         label = "bounce"
