@@ -1,7 +1,5 @@
 package com.example.criminalalertapp.ui.report.screen
 
-import android.R.attr.category
-import android.service.autofill.Validators.or
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,12 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
@@ -26,6 +27,7 @@ import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,29 +47,38 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.criminalalertapp.R
-import com.example.criminalalertapp.ui.components.SpinningIcon
+import com.example.criminalalertapp.ui.components.animations.SpinningIcon
 import com.example.criminalalertapp.ui.report.viewmodel.ReportUiState
 import com.example.criminalalertapp.ui.theme.CriminalAlertAppTheme
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
     uiState: ReportUiState,
     onStreetNameChange: (String) -> Unit,
     onCategoryNameChange: (String) -> Unit,
     onMonthChange: (String) -> Unit,
-    submitCrime: () -> Unit,
+    submitCrime: () -> Unit
 ) {
-
-    val currentMonth = remember {
-        SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
-    }
+    val showDatePicker by remember { mutableStateOf(false)}
+    val datePickerState = rememberDatePickerState()
 
     val isFormValid = uiState.streetName.isNotBlank() &&
             uiState.category.isNotBlank() &&
             uiState.month.isNotBlank()
+
+//    if(showDatePicker){
+//        DatePickerDialog(
+//            onDismissRequest = {showDatePicker = false},
+//            confirmButton = {
+//                TextButton(onClick = {
+//                    datePickerState.selectedDateMillis?.let { millis->
+//                        val date = Instant.ofEpochMilli()
+//                    }
+//                })
+//            }
+//        ) { }
+//    }
 
     ReportContent(
         streetName = uiState.streetName,
@@ -75,9 +86,9 @@ fun ReportScreen(
         month = uiState.month,
         isLoading = uiState.isLoading,
         isFormValid = isFormValid,
-        onStreetNameChange =onStreetNameChange,
+        onStreetNameChange = onStreetNameChange,
         onCategoryNameChange = onCategoryNameChange,
-        onMonthChange =onMonthChange,
+        onMonthChange = onMonthChange,
         submitCrime = submitCrime
     )
 }
@@ -174,6 +185,23 @@ fun ReportContent(
                     fontSize = 16.sp
                 )
             )
+            Spacer(modifier = Modifier.weight(1f))
+
+            ElevatedButton(
+                onClick = { submitCrime() },
+                modifier = Modifier.fillMaxWidth(),
+                colors = if (isFormValid) ButtonDefaults.buttonColors(containerColor = colorResource(R.color.PoliceRed)) else
+                    ButtonDefaults.buttonColors(containerColor = colorResource(R.color.PoliceRed).copy(alpha = 0.2f)),
+                enabled = isFormValid
+            )
+            {
+                Text(
+                    text = stringResource(R.string.reportBtn),
+                    modifier = Modifier.padding(top = 8.dp , bottom = 8.dp),
+                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
 }
@@ -191,7 +219,7 @@ fun TopBar() {
         contentAlignment = Alignment.Center
     )
     {
-        Column(modifier = Modifier.padding(top = 12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.statusBarsPadding(), horizontalAlignment = Alignment.CenterHorizontally) {
             SpinningIcon(
                 painter = painterResource(R.drawable.police_badge),
                 contentDescription = null,

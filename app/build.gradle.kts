@@ -90,4 +90,6 @@ dependencies {
     implementation(libs.androidx.preference.ktx)
 
     implementation(libs.androidx.material.icons.extended)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
 }

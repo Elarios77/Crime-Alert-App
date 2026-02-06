@@ -16,7 +16,7 @@ fun SpinEffect(
 ) {
     val rotation by animateFloatAsState(
         targetValue = if (isActive) 180f else 0f,
-        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
     )
     Box(modifier = Modifier.graphicsLayer {
         rotationY = rotation

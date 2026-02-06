@@ -1,8 +1,7 @@
-package com.example.criminalalertapp.ui.components
+package com.example.criminalalertapp.ui.components.animations
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable

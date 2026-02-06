@@ -1,5 +1,6 @@
 package com.example.criminalalertapp.ui.report.viewmodel
 
+import android.util.Log.i
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.criminalalertapp.domain.model.CrimeItem
@@ -68,7 +69,7 @@ class ReportViewModel @Inject constructor(
                 streetName = _uiState.value.streetName
             )
 
-            when ( val result = reportCrimeUseCase(newCrime)) {
+            when (val result = reportCrimeUseCase(newCrime)) {
                 is Resource.Success -> {
                     _uiState.update { it.copy(isLoading = false, isSuccess = true) }
                 }
