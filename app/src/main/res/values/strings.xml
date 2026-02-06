@@ -11,4 +11,9 @@
     <string name="home">Home</string>
     <string name="map">Map</string>
     <string name="report">Report</string>
+<!--    DatePicker-->
+    <string name="dp_select">Select</string>
+    <string name="dp_cancel">Cancel</string>
+    <string name="dp_selectDate">Select date</string>
+    <string name="dp_chooseDate">Choose date</string>
 </resources>
