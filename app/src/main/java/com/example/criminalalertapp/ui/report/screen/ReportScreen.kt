@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.criminalalertapp.R
 import com.example.criminalalertapp.ui.components.animations.SpinningIcon
+import com.example.criminalalertapp.ui.components.datepicker.CustomDatePicker
 import com.example.criminalalertapp.ui.report.viewmodel.ReportUiState
 import com.example.criminalalertapp.ui.theme.CriminalAlertAppTheme
 
@@ -60,25 +61,10 @@ fun ReportScreen(
     onMonthChange: (String) -> Unit,
     submitCrime: () -> Unit
 ) {
-    val showDatePicker by remember { mutableStateOf(false)}
-    val datePickerState = rememberDatePickerState()
 
     val isFormValid = uiState.streetName.isNotBlank() &&
             uiState.category.isNotBlank() &&
             uiState.month.isNotBlank()
-
-//    if(showDatePicker){
-//        DatePickerDialog(
-//            onDismissRequest = {showDatePicker = false},
-//            confirmButton = {
-//                TextButton(onClick = {
-//                    datePickerState.selectedDateMillis?.let { millis->
-//                        val date = Instant.ofEpochMilli()
-//                    }
-//                })
-//            }
-//        ) { }
-//    }
 
     ReportContent(
         streetName = uiState.streetName,
@@ -129,6 +115,12 @@ fun ReportContent(
             OutlinedTextField(
                 value = streetName,
                 onValueChange = onStreetNameChange,
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp
+                ),
                 label = {
                     Text(
                         stringResource(R.string.location_street),
@@ -137,18 +129,18 @@ fun ReportContent(
                     )
                 },
                 placeholder = { Text("e.g. Baker Street", color = Color.White) },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.LocationOn, null, tint = colorResource(R.color.PoliceDarkBlue)) },
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.LocationOn,
+                        null,
+                        tint = colorResource(R.color.PoliceDarkBlue)
+                    )
+                },
+                singleLine = true,
+                maxLines = 1,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = colorResource(R.color.PoliceDarkBlue),
                     unfocusedBorderColor = colorResource(R.color.PoliceDarkBlue)
-                ),
-                singleLine = true,
-                maxLines = 1,
-                textStyle = TextStyle(
-                    color = Color.White,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp
                 )
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -159,45 +151,32 @@ fun ReportContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = month,
-                onValueChange = onMonthChange,
-                label = {
-                    Text(
-                        stringResource(R.string.date),
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
-                placeholder = { Text("e.g. 05/2025", color = Color.White) },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.DateRange, null, tint = colorResource(R.color.PoliceDarkBlue)) },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colorResource(R.color.PoliceDarkBlue),
-                    unfocusedBorderColor = colorResource(R.color.PoliceDarkBlue)
-                ),
-                singleLine = true,
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                textStyle = TextStyle(
-                    color = Color.White,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp
-                )
+            CustomDatePicker(
+                selectedDate = month,
+                onDateSelected = { newDate -> onMonthChange(newDate) }
             )
+
             Spacer(modifier = Modifier.weight(1f))
 
             ElevatedButton(
                 onClick = { submitCrime() },
                 modifier = Modifier.fillMaxWidth(),
-                colors = if (isFormValid) ButtonDefaults.buttonColors(containerColor = colorResource(R.color.PoliceRed)) else
-                    ButtonDefaults.buttonColors(containerColor = colorResource(R.color.PoliceRed).copy(alpha = 0.2f)),
+                colors = if (isFormValid) ButtonDefaults.buttonColors(
+                    containerColor = colorResource(
+                        R.color.PoliceRed
+                    )
+                ) else
+                    ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.PoliceRed).copy(
+                            alpha = 0.2f
+                        )
+                    ),
                 enabled = isFormValid
             )
             {
                 Text(
                     text = stringResource(R.string.reportBtn),
-                    modifier = Modifier.padding(top = 8.dp , bottom = 8.dp),
+                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
                     fontWeight = FontWeight.SemiBold,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -219,7 +198,10 @@ fun TopBar() {
         contentAlignment = Alignment.Center
     )
     {
-        Column(modifier = Modifier.statusBarsPadding(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.statusBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             SpinningIcon(
                 painter = painterResource(R.drawable.police_badge),
                 contentDescription = null,
