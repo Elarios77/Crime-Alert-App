@@ -10,11 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -22,12 +21,12 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +41,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,7 +57,8 @@ fun ReportScreen(
     onStreetNameChange: (String) -> Unit,
     onCategoryNameChange: (String) -> Unit,
     onMonthChange: (String) -> Unit,
-    submitCrime: () -> Unit
+    submitCrime: () -> Unit,
+    onBackClicked: () -> Unit
 ) {
 
     val isFormValid = uiState.streetName.isNotBlank() &&
@@ -75,7 +74,8 @@ fun ReportScreen(
         onStreetNameChange = onStreetNameChange,
         onCategoryNameChange = onCategoryNameChange,
         onMonthChange = onMonthChange,
-        submitCrime = submitCrime
+        submitCrime = submitCrime,
+        onBackClicked = onBackClicked
     )
 }
 
@@ -89,10 +89,12 @@ fun ReportContent(
     onMonthChange: (String) -> Unit,
     onCategoryNameChange: (String) -> Unit,
     onStreetNameChange: (String) -> Unit,
-    submitCrime: () -> Unit
+    submitCrime: () -> Unit,
+    onBackClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
+            .systemBarsPadding()
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
@@ -103,7 +105,7 @@ fun ReportContent(
                 )
             )
     ) {
-        TopBar()
+        TopBar(onBackClicked)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -186,7 +188,7 @@ fun ReportContent(
 }
 
 @Composable
-fun TopBar() {
+fun TopBar(onBackClicked:()-> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -198,9 +200,17 @@ fun TopBar() {
         contentAlignment = Alignment.Center
     )
     {
+        IconButton(onClick = {onBackClicked()})
+        {
+            Icon(
+                imageVector = Icons.Default.ArrowBackIosNew,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.align(Alignment.TopStart)
+            )
+        }
         Column(
-            modifier = Modifier.statusBarsPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             SpinningIcon(
                 painter = painterResource(R.drawable.police_badge),
@@ -307,6 +317,7 @@ fun ReportScreenPreview() {
             onCategoryNameChange = {},
             onStreetNameChange = { },
             submitCrime = { },
+            onBackClicked = {}
         )
     }
 }

@@ -34,6 +34,10 @@ internal fun AppNavHost(
                 navController.navigate(ReportRoute)
             }
         )
-        reportScreen()
+        reportScreen(
+            onBackClicked = {
+                navController.popBackStack()
+            }
+        )
     }
 }

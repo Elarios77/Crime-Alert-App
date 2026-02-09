@@ -13,9 +13,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data object ReportRoute : NavigationRoute()
 
-internal fun NavGraphBuilder.reportScreen(
-
-){
+internal fun NavGraphBuilder.reportScreen(onBackClicked: () -> Boolean) {
     glanceFade<ReportRoute> {
         val viewModel: ReportViewModel = hiltViewModel()
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -24,7 +22,8 @@ internal fun NavGraphBuilder.reportScreen(
             onStreetNameChange = viewModel::onStreetNameChange,
             onCategoryNameChange = viewModel::onCategoryNameChange,
             onMonthChange = viewModel::onMonthChange,
-            submitCrime = {viewModel.submitCrime(51.5074, -0.1278)}
+            submitCrime = {viewModel.submitCrime(51.5074, -0.1278)},
+            onBackClicked = {onBackClicked()}
         )
     }
 }
