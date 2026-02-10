@@ -157,12 +157,11 @@ fun ReportContent(
                 selectedDate = month,
                 onDateSelected = { newDate -> onMonthChange(newDate) }
             )
-
-            Spacer(modifier = Modifier.weight(1f))
-
             ElevatedButton(
                 onClick = { submitCrime() },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 64.dp),
                 colors = if (isFormValid) ButtonDefaults.buttonColors(
                     containerColor = colorResource(
                         R.color.PoliceRed
@@ -188,7 +187,7 @@ fun ReportContent(
 }
 
 @Composable
-fun TopBar(onBackClicked:()-> Unit) {
+fun TopBar(onBackClicked: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -196,38 +195,38 @@ fun TopBar(onBackClicked:()-> Unit) {
             .background(
                 color = colorResource(R.color.PoliceDarkBlue),
                 shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
-            ),
-        contentAlignment = Alignment.Center
+            )
     )
     {
-        IconButton(onClick = {onBackClicked()})
+        IconButton(onClick = { onBackClicked() })
         {
             Icon(
                 imageVector = Icons.Default.ArrowBackIosNew,
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.align(Alignment.TopStart)
             )
         }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            SpinningIcon(
-                painter = painterResource(R.drawable.police_badge),
-                contentDescription = null,
-                modifier = Modifier.size(70.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.reportScreen_TitleLarge),
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.White
-            )
-            Text(
-                text = stringResource(R.string.reportScreen_subtitle),
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.9f)
-            )
+        Box(modifier = Modifier.align(Alignment.Center)) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                SpinningIcon(
+                    painter = painterResource(R.drawable.police_badge),
+                    contentDescription = null,
+                    modifier = Modifier.size(70.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(R.string.reportScreen_TitleLarge),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White
+                )
+                Text(
+                    text = stringResource(R.string.reportScreen_subtitle),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.9f)
+                )
+            }
         }
     }
 }

@@ -15,8 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CriminalAlertAppTheme(darkTheme = false) {
-                //TEMPORARY
-                //FloatingBottomBar()
+                //TEMPORARY NAVIGATION
                 AppNavHost()
             }
         }
