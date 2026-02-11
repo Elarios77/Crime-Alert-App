@@ -162,6 +162,7 @@ fun ReportContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 64.dp),
+                enabled = isFormValid,
                 colors = if (isFormValid) ButtonDefaults.buttonColors(
                     containerColor = colorResource(
                         R.color.PoliceRed
@@ -171,8 +172,7 @@ fun ReportContent(
                         containerColor = colorResource(R.color.PoliceRed).copy(
                             alpha = 0.2f
                         )
-                    ),
-                enabled = isFormValid
+                    )
             )
             {
                 Text(
@@ -218,13 +218,13 @@ fun TopBar(onBackClicked: () -> Unit) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(R.string.reportScreen_TitleLarge),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.White
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge
                 )
                 Text(
                     text = stringResource(R.string.reportScreen_subtitle),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.9f)
+                    color = Color.White.copy(alpha = 0.9f),
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -254,17 +254,22 @@ fun CrimeCategoryDropDownMenu(
         OutlinedTextField(
             value = selectedCategory,
             onValueChange = { },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(type = MenuAnchorType.PrimaryNotEditable, enabled = true),
             label = {
                 Text(
-                    stringResource(R.string.category),
+                    text = stringResource(R.string.category),
                     color = Color.White,
                     fontWeight = FontWeight.SemiBold
                 )
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor(type = MenuAnchorType.PrimaryNotEditable, enabled = true),
             readOnly = true,
+            textStyle = TextStyle(
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp
+            ),
             leadingIcon = {
                 Icon(
                     painter = painterResource(R.drawable.siren),
@@ -277,12 +282,7 @@ fun CrimeCategoryDropDownMenu(
                 focusedBorderColor = colorResource(R.color.PoliceDarkBlue),
                 unfocusedBorderColor = colorResource(R.color.PoliceDarkBlue),
 
-                ),
-            textStyle = TextStyle(
-                color = Color.White,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp
-            )
+                )
         )
         ExposedDropdownMenu(
             expanded = expanded,

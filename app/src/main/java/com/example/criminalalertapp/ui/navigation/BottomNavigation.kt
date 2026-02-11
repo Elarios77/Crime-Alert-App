@@ -39,12 +39,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.criminalalertapp.R
 import com.example.criminalalertapp.ui.components.animations.BottomUiItem
 import com.example.criminalalertapp.ui.components.animations.BounceEffect
 import com.example.criminalalertapp.ui.components.animations.IconAnimation
 import com.example.criminalalertapp.ui.components.animations.ShakeEffect
 import com.example.criminalalertapp.ui.components.animations.SpinEffect
+import com.example.criminalalertapp.ui.openmap.navigation.OpenMapRoute
+import com.example.criminalalertapp.ui.report.navigation.ReportRoute
 import com.example.criminalalertapp.ui.theme.CriminalAlertAppTheme
 
 @Composable
@@ -101,25 +109,32 @@ fun NavBarItem(
 }
 
 @Composable
-fun FloatingBottomBar() {
+fun FloatingBottomBar(navController: NavController) {
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
     val items = listOf(
         BottomUiItem(
             title = stringResource(R.string.home),
             icon = Icons.Default.Home,
             isSelected = true,
             animationType = IconAnimation.BOUNCE,
+            route = "home" //todo homeScreen
         ),
         BottomUiItem(
             title = stringResource(R.string.map),
             icon = Icons.Default.Map,
             isSelected = false,
-            animationType = IconAnimation.SHAKE
+            animationType = IconAnimation.SHAKE,
+            route = OpenMapRoute
         ),
         BottomUiItem(
             title = stringResource(R.string.report),
             icon = Icons.Default.LocalPolice,
             isSelected = false,
             animationType = IconAnimation.SPIN,
+            route = ReportRoute
         )
     )
 
@@ -127,12 +142,14 @@ fun FloatingBottomBar() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .padding(16.dp),
         contentAlignment = Alignment.BottomCenter
     ) {
 
         Surface(
             modifier = Modifier
+                .padding(horizontal = 16.dp)
                 .shadow(elevation = 10.dp, shape = RoundedCornerShape(50.dp)),
             color = colorResource(R.color.PoliceDarkBlue)
         ) {
@@ -143,10 +160,22 @@ fun FloatingBottomBar() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                items.forEachIndexed { index, item ->
+                items.forEach { item ->
+                    val isSelected = currentDestination?.hierarchy?.any {
+                        it.hasRoute(item.route::class)
+                    } == true
+
                     NavBarItem(
-                        item = item.copy(isSelected = index == selectedIndex),
-                        onClick = { selectedIndex = index }
+                        item = item.copy(isSelected = isSelected),
+                        onClick = {
+                            navController.navigate(item.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
                     )
                 }
             }
@@ -157,7 +186,9 @@ fun FloatingBottomBar() {
 @Preview
 @Composable
 fun FloatingBottomBarPreview() {
-    FloatingBottomBar()
+    FloatingBottomBar(
+        navController = rememberNavController()
+    )
 }
 
 @Preview(showBackground = true)
@@ -169,7 +200,8 @@ fun NavBarItemPreview() {
                 title = "Home",
                 icon = Icons.Default.Home,
                 isSelected = true,
-                animationType = IconAnimation.BOUNCE
+                animationType = IconAnimation.BOUNCE,
+                route = "home"
             ),
             onClick = {}
         )
