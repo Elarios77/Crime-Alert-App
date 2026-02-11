@@ -4,12 +4,10 @@ import android.view.View
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -35,10 +33,9 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 
 @Composable
-fun OpenMapScreen(
+internal fun OpenMapScreen(
     uiState: OpenMapUiState,
-    onCameraMove: (Double, Double) -> Unit,
-    onReportClicked: () -> Unit
+    onCameraMove: (Double, Double) -> Unit
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -54,13 +51,10 @@ fun OpenMapScreen(
         snackBarHostState = snackBarHostState,
         onCameraMove = onCameraMove
     )
-    Button(onClick = onReportClicked) {
-        Text("REPORTSCREEN")
-    }
 }
 
 @Composable
-fun MapContent(
+private fun MapContent(
     state: OpenMapUiState,
     snackBarHostState: SnackbarHostState,
     onCameraMove: (Double, Double) -> Unit
@@ -87,7 +81,7 @@ fun MapContent(
 }
 
 @Composable
-fun OsmMapView(
+private fun OsmMapView(
     crimes: List<CrimeItem>,
     onCameraMove: (Double, Double) -> Unit,
     modifier: Modifier
@@ -98,7 +92,6 @@ fun OsmMapView(
     val pinIcon = ContextCompat.getDrawable(context, R.drawable.ic_pin_red)
 
     AndroidView(
-        modifier = modifier,
         factory = { context ->
             MapView(context).apply {
                 zoomController.setVisibility(org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER)
@@ -132,6 +125,7 @@ fun OsmMapView(
                 addMapListener(DelayedMapListener(mapListener, 500))
             }
         },
+        modifier = modifier,
         update = { mapView ->
             val existingClusterer = mapView.overlays.firstOrNull { it is RadiusMarkerClusterer } as? RadiusMarkerClusterer
 

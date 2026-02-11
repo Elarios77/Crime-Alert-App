@@ -12,5 +12,6 @@ data class BottomUiItem(
     val title: String,
     val icon: ImageVector,
     val isSelected: Boolean,
-    val animationType : IconAnimation
+    val animationType: IconAnimation,
+    val route: Any
 )

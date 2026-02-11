@@ -25,9 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +49,7 @@ import com.example.criminalalertapp.ui.components.animations.BounceEffect
 import com.example.criminalalertapp.ui.components.animations.IconAnimation
 import com.example.criminalalertapp.ui.components.animations.ShakeEffect
 import com.example.criminalalertapp.ui.components.animations.SpinEffect
+import com.example.criminalalertapp.ui.home.navigation.HomeRoute
 import com.example.criminalalertapp.ui.openmap.navigation.OpenMapRoute
 import com.example.criminalalertapp.ui.report.navigation.ReportRoute
 import com.example.criminalalertapp.ui.theme.CriminalAlertAppTheme
@@ -98,8 +97,8 @@ fun NavBarItem(
                     Text(
                         text = item.title,
                         color = contentColor,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
                     )
 
                 }
@@ -120,7 +119,7 @@ fun FloatingBottomBar(navController: NavController) {
             icon = Icons.Default.Home,
             isSelected = true,
             animationType = IconAnimation.BOUNCE,
-            route = "home" //todo homeScreen
+            route = HomeRoute
         ),
         BottomUiItem(
             title = stringResource(R.string.map),
@@ -137,25 +136,22 @@ fun FloatingBottomBar(navController: NavController) {
             route = ReportRoute
         )
     )
-
-    var selectedIndex by remember { mutableStateOf(0) }
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .navigationBarsPadding()
-            .padding(16.dp),
+            .navigationBarsPadding(),
         contentAlignment = Alignment.BottomCenter
     ) {
 
         Surface(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
                 .shadow(elevation = 10.dp, shape = RoundedCornerShape(50.dp)),
             color = colorResource(R.color.PoliceDarkBlue)
         ) {
             Row(
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(12.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically

@@ -13,16 +13,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data object OpenMapRoute : NavigationRoute()
 
-internal fun NavGraphBuilder.openMapScreen(
-    onNavigateToReport: () -> Unit
-) {
+internal fun NavGraphBuilder.openMapScreen() {
     glanceFade<OpenMapRoute> {
         val viewModel: OpenMapViewModel = hiltViewModel()
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         OpenMapScreen(
             uiState = uiState,
             onCameraMove = { lat, lng -> viewModel.loadCrimes(lat,lng) },
-            onReportClicked = onNavigateToReport
         )
     }
 }

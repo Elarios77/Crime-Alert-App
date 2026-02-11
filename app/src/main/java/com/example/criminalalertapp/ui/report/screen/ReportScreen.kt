@@ -58,7 +58,6 @@ fun ReportScreen(
     onCategoryNameChange: (String) -> Unit,
     onMonthChange: (String) -> Unit,
     submitCrime: () -> Unit,
-    onBackClicked: () -> Unit
 ) {
 
     val isFormValid = uiState.streetName.isNotBlank() &&
@@ -75,7 +74,6 @@ fun ReportScreen(
         onCategoryNameChange = onCategoryNameChange,
         onMonthChange = onMonthChange,
         submitCrime = submitCrime,
-        onBackClicked = onBackClicked
     )
 }
 
@@ -90,7 +88,6 @@ fun ReportContent(
     onCategoryNameChange: (String) -> Unit,
     onStreetNameChange: (String) -> Unit,
     submitCrime: () -> Unit,
-    onBackClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -105,7 +102,7 @@ fun ReportContent(
                 )
             )
     ) {
-        TopBar(onBackClicked)
+        TopBar()
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -187,7 +184,7 @@ fun ReportContent(
 }
 
 @Composable
-fun TopBar(onBackClicked: () -> Unit) {
+fun TopBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -195,38 +192,29 @@ fun TopBar(onBackClicked: () -> Unit) {
             .background(
                 color = colorResource(R.color.PoliceDarkBlue),
                 shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
-            )
+            ),
+        contentAlignment = Alignment.Center
     )
     {
-        IconButton(onClick = { onBackClicked() })
-        {
-            Icon(
-                imageVector = Icons.Default.ArrowBackIosNew,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            SpinningIcon(
+                painter = painterResource(R.drawable.police_badge),
                 contentDescription = null,
-                tint = Color.White,
+                modifier = Modifier.size(70.dp)
             )
-        }
-        Box(modifier = Modifier.align(Alignment.Center)) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                SpinningIcon(
-                    painter = painterResource(R.drawable.police_badge),
-                    contentDescription = null,
-                    modifier = Modifier.size(70.dp)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = stringResource(R.string.reportScreen_TitleLarge),
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(
-                    text = stringResource(R.string.reportScreen_subtitle),
-                    color = Color.White.copy(alpha = 0.9f),
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.reportScreen_TitleLarge),
+                color = Color.White,
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = stringResource(R.string.reportScreen_subtitle),
+                color = Color.White.copy(alpha = 0.9f),
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }
@@ -315,8 +303,7 @@ fun ReportScreenPreview() {
             onMonthChange = {},
             onCategoryNameChange = {},
             onStreetNameChange = { },
-            submitCrime = { },
-            onBackClicked = {}
+            submitCrime = { }
         )
     }
 }
