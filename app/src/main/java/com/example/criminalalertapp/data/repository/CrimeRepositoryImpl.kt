@@ -7,12 +7,8 @@ import com.example.criminalalertapp.data.remote.RemoteDataSource
 import com.example.criminalalertapp.domain.model.CrimeItem
 import com.example.criminalalertapp.domain.repository.CrimeRepository
 import com.example.criminalalertapp.util.Resource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.collections.map
 
 class CrimeRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
@@ -21,38 +17,22 @@ class CrimeRepositoryImpl @Inject constructor(
     private val entityMapper: CrimeEntityMapper
 ) : CrimeRepository {
 
-    override fun getCrimes(
-        date: String?,
-        lat: Double,
-        lng: Double
-    ): Flow<Resource<List<CrimeItem>>> {
-        return flow {
-            emit(Resource.Loading(true))
-            var shouldEmitFromLocal = true
-            try {
-                val remoteCrimes = remoteDataSource.getCrimeStats(date, lat, lng)
-                val crimes = remoteCrimes.map { dtoMapper(it) }
-                localDataSource.insertCrime(crimes.map { entityMapper(it) })
-            } catch (e: Exception) {
-                e.printStackTrace()
-                val localCrimes = localDataSource.getAllCrimes().first()
-                if (localCrimes.isEmpty()) {
-                    emit(Resource.Error(message = "Could not load data"))
-                    shouldEmitFromLocal = false
+    override suspend fun getCrimes(date: String?, lat: Double, lng: Double): Result<List<CrimeItem>> {
+        return try {
+            val response = remoteDataSource.getCrimeStats(date, lat, lng)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    val mappedCrimes = body.map { dtoMapper(it) }
+                    Result.success(mappedCrimes)
+                } else {
+                    Result.failure(Exception("Response body was null"))
                 }
-            } finally {
-                emit(Resource.Loading(false))
+            } else {
+                Result.failure(Exception("Server error"))
             }
-
-            if (shouldEmitFromLocal) {
-                val localFlow = localDataSource.getAllCrimes()
-                emitAll(
-                    localFlow.map { entities ->
-                        val domainCrimeItems = entities.map { entityMapper(it) }
-                        Resource.Success(domainCrimeItems)
-                    }
-                )
-            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 

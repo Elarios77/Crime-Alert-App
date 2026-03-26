@@ -79,9 +79,6 @@ dependencies {
     implementation(libs.squareup.okhttp)
     implementation(libs.squareup.okhttp.logging.interceptor)
 
-    implementation(libs.osmdroid.android)
-    implementation(libs.osmbonuspack)
-
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
 
