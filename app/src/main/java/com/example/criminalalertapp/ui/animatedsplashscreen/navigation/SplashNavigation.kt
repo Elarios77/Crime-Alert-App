@@ -1,19 +1,17 @@
 package com.example.criminalalertapp.ui.animatedsplashscreen.navigation
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.criminalalertapp.ui.animatedsplashscreen.SplashScreen
-import com.example.criminalalertapp.util.navigation.NavigationRoute
-import com.example.criminalalertapp.util.navigation.glanceFade
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data object SplashRoute : NavigationRoute()
+object SplashRoute
 
 internal fun NavGraphBuilder.splashScreen(
     onTimeout: () -> Unit
 ) {
-    glanceFade<SplashRoute>
-    {
+    composable<SplashRoute> {
         SplashScreen(onTimeout = onTimeout)
     }
 }

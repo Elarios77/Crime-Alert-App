@@ -57,7 +57,7 @@ internal fun AppNavHost() {
                 openMapScreen()
                 reportScreen(
                     onBackClicked = {
-                        navController.popBackStack()
+                        navController.navigateUp()
                     }
                 )
             }

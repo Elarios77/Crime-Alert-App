@@ -4,22 +4,23 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.criminalalertapp.ui.openmap.screen.OpenMapScreen
 import com.example.criminalalertapp.ui.openmap.viewModel.OpenMapViewModel
-import com.example.criminalalertapp.util.navigation.NavigationRoute
-import com.example.criminalalertapp.util.navigation.glanceFade
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data object OpenMapRoute : NavigationRoute()
+object OpenMapRoute
 
 internal fun NavGraphBuilder.openMapScreen() {
-    glanceFade<OpenMapRoute> {
+    composable<OpenMapRoute> {
+
         val viewModel: OpenMapViewModel = hiltViewModel()
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
         OpenMapScreen(
             uiState = uiState,
-            onCameraMove = { lat, lng -> viewModel.loadCrimes(lat,lng) },
+            onCameraMove = { lat, lng -> viewModel.loadCrimes(lat, lng) },
         )
     }
 }
