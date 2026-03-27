@@ -89,4 +89,6 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+
+    implementation(libs.kotlinx.collections.immutable)
 }

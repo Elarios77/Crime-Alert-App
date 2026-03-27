@@ -13,5 +13,6 @@
     <color name="GlassBlue">#3300192F</color>
     <color name="GlassHighlight">#26FFFFFF</color>
     <color name="UnselectedWhite">#80FFFFFF</color>
+    <color name="light_blue">#90D5FF</color>
 
 </resources>

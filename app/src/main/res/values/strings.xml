@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Criminal Alert App</string>
     <string name="OsmMapViewText">Map Preview Placeholder</string>
-<!--    ReportScreen-->
+    <!--    ReportScreen-->
     <string name="reportBtn">REPORT</string>
     <string name="reportScreen_TitleLarge">REPORT INCIDENT</string>
     <string name="reportScreen_subtitle">Official Police Database</string>
@@ -11,9 +11,20 @@
     <string name="home">Home</string>
     <string name="map">Map</string>
     <string name="report">Report</string>
-<!--    DatePicker-->
+    <!--    DatePicker-->
     <string name="dp_select">Select</string>
     <string name="dp_cancel">Cancel</string>
     <string name="dp_selectDate">Select date</string>
     <string name="dp_chooseDate">Choose date</string>
+    <!--- Home Screen -->
+    <string name="crime_alert">CRIME ALERT</string>
+    <string name="network">NETWORK</string>
+    <string name="hs_subtitle">Official Police &amp; Crime Database</string>
+    <string name="hs_cardItem1">REAL-TIME ALERTS</string>
+    <string name="hs_cardItem1_text">Stay updated on verified crime reports and safety advisories in your vicinity</string>
+    <string name="hs_cardItem2">INTERACTIVE CRIME MAP</string>
+    <string name="hs_cardItem2_text">View categorized incidents, safety zones and community resources on a live map</string>
+    <string name="hs_cardItem3">REPORT &amp; CONNECT</string>
+    <string name="hs_cardItem3_title">Easily submit anonymous tips and access official police information and services</string>
+
 </resources>
