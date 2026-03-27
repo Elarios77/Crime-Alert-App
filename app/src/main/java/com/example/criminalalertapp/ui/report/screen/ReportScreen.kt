@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -20,6 +21,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
@@ -56,6 +58,7 @@ fun ReportScreen(
     onCategoryNameChange: (String) -> Unit,
     onMonthChange: (String) -> Unit,
     submitCrime: () -> Unit,
+    onBackClicked: () -> Unit,
 ) {
 
     val isFormValid = uiState.streetName.isNotBlank() &&
@@ -72,6 +75,7 @@ fun ReportScreen(
         onCategoryNameChange = onCategoryNameChange,
         onMonthChange = onMonthChange,
         submitCrime = submitCrime,
+        onBackClicked = onBackClicked
     )
 }
 
@@ -86,6 +90,7 @@ fun ReportContent(
     onCategoryNameChange: (String) -> Unit,
     onStreetNameChange: (String) -> Unit,
     submitCrime: () -> Unit,
+    onBackClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -100,7 +105,7 @@ fun ReportContent(
                 )
             )
     ) {
-        TopBar()
+        TopBar(onBackClicked)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -182,7 +187,7 @@ fun ReportContent(
 }
 
 @Composable
-fun TopBar() {
+fun TopBar(onBackClicked: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -194,6 +199,17 @@ fun TopBar() {
         contentAlignment = Alignment.Center
     )
     {
+        IconButton(
+            onClick = onBackClicked,
+            modifier = Modifier.align(Alignment.TopStart)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBackIosNew,
+                contentDescription = null,
+                modifier = Modifier.size(25.dp),
+                tint = Color.White.copy(alpha = 0.8f)
+            )
+        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -301,7 +317,8 @@ fun ReportScreenPreview() {
             onMonthChange = {},
             onCategoryNameChange = {},
             onStreetNameChange = { },
-            submitCrime = { }
+            onBackClicked = {},
+            submitCrime = {}
         )
     }
 }

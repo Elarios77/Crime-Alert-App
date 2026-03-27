@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 object ReportRoute
 
-internal fun NavGraphBuilder.reportScreen(onBackClicked: () -> Boolean) {
+fun NavGraphBuilder.reportScreen(onBackClicked: () -> Unit) {
     composable<ReportRoute> {
 
         val viewModel: ReportViewModel = hiltViewModel()
@@ -25,6 +25,7 @@ internal fun NavGraphBuilder.reportScreen(onBackClicked: () -> Boolean) {
             onCategoryNameChange = viewModel::onCategoryNameChange,
             onMonthChange = viewModel::onMonthChange,
             submitCrime = { viewModel.submitCrime(51.5074, -0.1278) },
+            onBackClicked = onBackClicked
         )
     }
 }

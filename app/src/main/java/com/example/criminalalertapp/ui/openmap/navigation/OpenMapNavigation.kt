@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 object OpenMapRoute
 
-internal fun NavGraphBuilder.openMapScreen() {
+fun NavGraphBuilder.openMapScreen() {
     composable<OpenMapRoute> {
         MapScreen()
     }

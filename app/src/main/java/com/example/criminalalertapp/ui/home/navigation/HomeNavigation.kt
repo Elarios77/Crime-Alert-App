@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 object HomeRoute
 
-internal fun NavGraphBuilder.homeScreen() {
+fun NavGraphBuilder.homeScreen() {
     composable<HomeRoute> {
         HomeScreen()
     }

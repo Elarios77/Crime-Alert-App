@@ -22,7 +22,7 @@ import com.example.criminalalertapp.ui.openmap.navigation.openMapScreen
 import com.example.criminalalertapp.ui.report.navigation.reportScreen
 
 @Composable
-internal fun AppNavHost() {
+fun AppNavHost() {
 
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -55,11 +55,7 @@ internal fun AppNavHost() {
                 )
                 homeScreen()
                 openMapScreen()
-                reportScreen(
-                    onBackClicked = {
-                        navController.navigateUp()
-                    }
-                )
+                reportScreen(onBackClicked = { navController.navigateUp() })
             }
             if (showBottomBar) {
                 FloatingBottomBar(navController = navController)

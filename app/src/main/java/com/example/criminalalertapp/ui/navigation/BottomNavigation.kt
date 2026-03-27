@@ -54,7 +54,7 @@ import com.example.criminalalertapp.ui.report.navigation.ReportRoute
 import com.example.criminalalertapp.ui.theme.CriminalAlertAppTheme
 
 @Composable
-fun NavBarItem(
+private fun NavBarItem(
     item: BottomUiItem,
     onClick: () -> Unit
 ) {

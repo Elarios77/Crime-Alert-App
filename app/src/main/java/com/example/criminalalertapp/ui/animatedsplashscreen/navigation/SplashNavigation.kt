@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 object SplashRoute
 
-internal fun NavGraphBuilder.splashScreen(
+fun NavGraphBuilder.splashScreen(
     onTimeout: () -> Unit
 ) {
     composable<SplashRoute> {
