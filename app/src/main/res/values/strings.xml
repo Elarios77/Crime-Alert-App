@@ -20,11 +20,13 @@
     <string name="crime_alert">CRIME ALERT</string>
     <string name="network">NETWORK</string>
     <string name="hs_subtitle">Official Police &amp; Crime Database</string>
-    <string name="hs_cardItem1">REAL-TIME ALERTS</string>
-    <string name="hs_cardItem1_text">Stay updated on verified crime reports and safety advisories in your vicinity</string>
-    <string name="hs_cardItem2">INTERACTIVE CRIME MAP</string>
-    <string name="hs_cardItem2_text">View categorized incidents, safety zones and community resources on a live map</string>
-    <string name="hs_cardItem3">REPORT &amp; CONNECT</string>
-    <string name="hs_cardItem3_title">Easily submit anonymous tips and access official police information and services</string>
+    <string name="hs_cardItem1">REAL-TIME ALERTS.</string>
+    <string name="hs_cardItem1_text">Stay updated on verified crime reports and safety advisories in your vicinity.</string>
+    <string name="hs_cardItem2">INTERACTIVE CRIME MAP.</string>
+    <string name="hs_cardItem2_text">View categorized incidents, safety zones and community resources on a live map.</string>
+    <string name="hs_cardItem3">REPORT &amp; CONNECT.</string>
+    <string name="hs_cardItem3_title">Easily submit anonymous tips and access official police information and services.</string>
+    <string name="hs_message">CRIME ALERT is designed to enhance public safety by bridging the gap between citizens and official law enforcement. Get verified information and contribute to a safer community.</string>
+    <string name="hs_slogan">\"Always next to the citizen\"</string>
 
 </resources>
